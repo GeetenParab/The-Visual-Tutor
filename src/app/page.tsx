@@ -1,11 +1,23 @@
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { useTRPC } from "@/trpc/client";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 const Page = () => {
-  return (
+    const trpc = useTRPC();
+    const invoke  = useMutation(trpc.invoke.mutationOptions({
+      onSuccess: ()=>{
+        toast.success("backgroung job started")
+      }
+    }));
+
+ return (
     <div className="font-bold text-rose-500">
-    hello world
-    <Button variant={"destructive"}>Click me</Button>
+     <Button disabled={invoke.isPending} onClick={()=> invoke.mutate({text: "Test"})}>
+      Invoke background job
+      </Button>
     </div>
   )
 }
